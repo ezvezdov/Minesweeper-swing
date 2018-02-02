@@ -14,20 +14,20 @@ class View_field extends JPanel {
     if you wont to change icons to 64x64, you should change folder "32x32 images" to "64x64 images" and
     change SQUARE_PX to 64;
      */
-    final private ImageIcon CLOSED_SQUARE_ICON = new ImageIcon("images/32x32 images/covered_square.png");
-    final private ImageIcon BOMB_ICON = new ImageIcon("images/32x32 images/bomb.png");
-    final private ImageIcon WRONG_BOMB_ICON = new ImageIcon("images/32x32 images/wrong_bomb.png");
-    final private ImageIcon FLAG_ICON = new ImageIcon("images/32x32 images/flag.png");
-    final private ImageIcon FAIL_BOMB_ICON = new ImageIcon("images/32x32 images/fail_bomb.png");
-    final private ImageIcon ZERO_BOMBS_ICON = new ImageIcon("images/32x32 images/0_bombs.png");
-    final private ImageIcon ONE_BOMBS_ICON = new ImageIcon("images/32x32 images/1_bombs.png");
-    final private ImageIcon TWO_BOMBS_ICON = new ImageIcon("images/32x32 images/2_bombs.png");
-    final private ImageIcon THREE_BOMBS_ICON = new ImageIcon("images/32x32 images/3_bombs.png");
-    final private ImageIcon FOUR_BOMBS_ICON = new ImageIcon("images/32x32 images/4_bombs.png");
-    final private ImageIcon FIVE_BOMBS_ICON = new ImageIcon("images/32x32 images/5_bombs.png");
-    final private ImageIcon SIX_BOMBS_ICON = new ImageIcon("images/32x32 images/6_bombs.png");
-    final private ImageIcon SEVEN_BOMBS_ICON = new ImageIcon("images/32x32 images/7_bombs.png");
-    final private ImageIcon EIGHT_BOMBS_ICON = new ImageIcon("images/32x32 images/8_bombs.png");
+    final private ImageIcon CLOSED_SQUARE_ICON = new ImageIcon("res/images/32x32 images/covered_square.png");
+    final private ImageIcon BOMB_ICON = new ImageIcon("res/images/32x32 images/bomb.png");
+    final private ImageIcon WRONG_BOMB_ICON = new ImageIcon("res/images/32x32 images/wrong_bomb.png");
+    final private ImageIcon FLAG_ICON = new ImageIcon("res/images/32x32 images/flag.png");
+    final private ImageIcon FAIL_BOMB_ICON = new ImageIcon("res/images/32x32 images/fail_bomb.png");
+    final private ImageIcon ZERO_BOMBS_ICON = new ImageIcon("res/images/32x32 images/0_bombs.png");
+    final private ImageIcon ONE_BOMBS_ICON = new ImageIcon("res/images/32x32 images/1_bombs.png");
+    final private ImageIcon TWO_BOMBS_ICON = new ImageIcon("res/images/32x32 images/2_bombs.png");
+    final private ImageIcon THREE_BOMBS_ICON = new ImageIcon("res/images/32x32 images/3_bombs.png");
+    final private ImageIcon FOUR_BOMBS_ICON = new ImageIcon("res/images/32x32 images/4_bombs.png");
+    final private ImageIcon FIVE_BOMBS_ICON = new ImageIcon("res/images/32x32 images/5_bombs.png");
+    final private ImageIcon SIX_BOMBS_ICON = new ImageIcon("res/images/32x32 images/6_bombs.png");
+    final private ImageIcon SEVEN_BOMBS_ICON = new ImageIcon("res/images/32x32 images/7_bombs.png");
+    final private ImageIcon EIGHT_BOMBS_ICON = new ImageIcon("res/images/32x32 images/8_bombs.png");
 
     private int flags_count;
     int PANEL_LENGTH, PANEL_WIDTH;
