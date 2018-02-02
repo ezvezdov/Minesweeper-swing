@@ -5,34 +5,38 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class View_field extends JPanel {
+class View_field extends JPanel {
 
     final private int SQUARE_PX = 32; //side length of a square (px)
     private boolean Game_over = false;
 
-    final private ImageIcon CLOSED_SQUARE_ICON = new ImageIcon("images/covered_square.png");
-    final private ImageIcon BOMB_ICON = new ImageIcon("images/bomb.png");
-    final private ImageIcon WRONG_BOMB_ICON = new ImageIcon("images/wrong_bomb.png");
-    final private ImageIcon FLAG_ICON = new ImageIcon("images/flag.png");
-    final private ImageIcon FAIL_BOMB_ICON = new ImageIcon("images/fail_bomb.png");
-    final private ImageIcon ZERO_BOMBS_ICON = new ImageIcon("images/0_bombs.png");
-    final private ImageIcon ONE_BOMBS_ICON = new ImageIcon("images/1_bombs.png");
-    final private ImageIcon TWO_BOMBS_ICON = new ImageIcon("images/2_bombs.png");
-    final private ImageIcon THREE_BOMBS_ICON = new ImageIcon("images/3_bombs.png");
-    final private ImageIcon FOUR_BOMBS_ICON = new ImageIcon("images/4_bombs.png");
-    final private ImageIcon FIVE_BOMBS_ICON = new ImageIcon("images/5_bombs.png");
-    final private ImageIcon SIX_BOMBS_ICON = new ImageIcon("images/6_bombs.png");
-    final private ImageIcon SEVEN_BOMBS_ICON = new ImageIcon("images/7_bombs.png");
-    final private ImageIcon EIGHT_BOMBS_ICON = new ImageIcon("images/8_bombs.png");
+    /*
+    if you wont to change icons to 64x64, you should change folder "32x32 images" to "64x64 images" and
+    change SQUARE_PX to 64;
+     */
+    final private ImageIcon CLOSED_SQUARE_ICON = new ImageIcon("images/32x32 images/covered_square.png");
+    final private ImageIcon BOMB_ICON = new ImageIcon("images/32x32 images/bomb.png");
+    final private ImageIcon WRONG_BOMB_ICON = new ImageIcon("images/32x32 images/wrong_bomb.png");
+    final private ImageIcon FLAG_ICON = new ImageIcon("images/32x32 images/flag.png");
+    final private ImageIcon FAIL_BOMB_ICON = new ImageIcon("images/32x32 images/fail_bomb.png");
+    final private ImageIcon ZERO_BOMBS_ICON = new ImageIcon("images/32x32 images/0_bombs.png");
+    final private ImageIcon ONE_BOMBS_ICON = new ImageIcon("images/32x32 images/1_bombs.png");
+    final private ImageIcon TWO_BOMBS_ICON = new ImageIcon("images/32x32 images/2_bombs.png");
+    final private ImageIcon THREE_BOMBS_ICON = new ImageIcon("images/32x32 images/3_bombs.png");
+    final private ImageIcon FOUR_BOMBS_ICON = new ImageIcon("images/32x32 images/4_bombs.png");
+    final private ImageIcon FIVE_BOMBS_ICON = new ImageIcon("images/32x32 images/5_bombs.png");
+    final private ImageIcon SIX_BOMBS_ICON = new ImageIcon("images/32x32 images/6_bombs.png");
+    final private ImageIcon SEVEN_BOMBS_ICON = new ImageIcon("images/32x32 images/7_bombs.png");
+    final private ImageIcon EIGHT_BOMBS_ICON = new ImageIcon("images/32x32 images/8_bombs.png");
 
     private int flags_count;
     int PANEL_LENGTH, PANEL_WIDTH;
     private int FIELD_LENGTH, FIELD_WIDTH;
 
-    public View_field(Fields fields, int BOMBS_COUNT) {
+    View_field(Fields fields, int BOMBS_COUNT,int FIELD_LENGTH, int FIELD_WIDTH) {
         this.flags_count = BOMBS_COUNT;
-        this.FIELD_LENGTH = fields.FIELD_LENGTH;
-        this.FIELD_WIDTH = fields.FIELD_WIDTH;
+        this.FIELD_LENGTH = FIELD_LENGTH;
+        this.FIELD_WIDTH = FIELD_WIDTH;
 
         JLabel[][] closed_img_field = new JLabel[FIELD_LENGTH][FIELD_WIDTH];
         InitClosed_img_field(closed_img_field);
@@ -53,38 +57,32 @@ public class View_field extends JPanel {
                 j = Math.round(x) / SQUARE_PX;
                 i = Math.round(y) / SQUARE_PX;
 
+                System.out.print("x = ");
                 System.out.print(x);
-                System.out.print(" ");
+                System.out.print(" ; y = ");
                 System.out.print(y);
                 System.out.println();
+                System.out.print("j = ");
                 System.out.print(j);
-                System.out.print(" ");
-                System.out.print(i);
+                System.out.print(" ; i = ");
+                System.out.println(i);
                 System.out.println();
 
                 if (SwingUtilities.isLeftMouseButton(e)) {
-                    MouseListener(i, j, false, closed_img_field, fields); // "false" if left mousebutton was pressed
+                    LeftMouseButtonHandler(i, j,closed_img_field, fields);
                 }
-                if (SwingUtilities.isRightMouseButton(e)) {
-                    MouseListener(i, j, true, closed_img_field, fields); // "true" if right mousebutton was pressed
+                if (SwingUtilities.isRightMouseButton(e) && !Game_over) {
+                    RightMouseButtonHandler(i, j, closed_img_field, fields);
                 }
             }
-
             @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
+            public void mousePressed(MouseEvent e) {}
             @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
+            public void mouseReleased(MouseEvent e) {}
             @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
+            public void mouseEntered(MouseEvent e) {}
             @Override
-            public void mouseExited(MouseEvent e) {
-            }
+            public void mouseExited(MouseEvent e) {}
         });
     }
 
@@ -146,6 +144,9 @@ public class View_field extends JPanel {
     }
 
     private void OpenZeroBlocks(int i, int j, JLabel[][] closed_img_field, Fields fields) {
+        /*
+        If you clicked at block, where 0 bomb around. It's fill algorithm.
+         */
         if (i == -1 || i == FIELD_LENGTH || j == -1 || j == FIELD_WIDTH || fields.closed_txt_field_is_FLAG(i, j))
             return;
         if (!fields.opened_txt_field_is_ZERO_BOMBS(i, j)) {
@@ -165,6 +166,59 @@ public class View_field extends JPanel {
         OpenZeroBlocks(i - 1, j + 1, closed_img_field, fields);
         return;
     }
+    private void OpenBlocksAround(int i, int j, JLabel[][] closed_img_field, Fields fields) {
+        /*
+        if you will click at number(which shows the number of bombs around),
+        and flags_count around number == number,
+        blocks around number will open. If flags will not
+        install at bombs, you will lose.
+         */
+        int flags_around = fields.opened_txt_field_get_information(i,j);
+
+        int kmax = i+1 < FIELD_LENGTH ? 2:1;
+        int lmax = j+1 < FIELD_LENGTH ? 2:1;
+
+        //kmax, lmax, k and l are calculated to prevent ArrayIndexOutOfBoundsException.
+
+        for(int k = i-1 >= 0 ? -1:0; k < kmax; k++){
+            for(int l = j-1 >= 0 ? -1:0; l < lmax;l++){
+                if (k != 0 || l != 0) {
+                    if(fields.closed_txt_field_is_FLAG(i + k,j + l)) flags_around--;
+                }
+            }
+        }
+
+        if(flags_around <= 0){ // if flags_around < 0, the user made a mistake
+            for(int k = i-1 >= 0 ? -1:0; k < kmax; k++){
+                for(int l = j-1 >= 0 ? -1:0; l < lmax;l++){
+                    if(k != 0 || l != 0){
+                        if(! fields.closed_txt_field_is_FLAG(i + k,j + l)){
+                            if (fields.opened_txt_field_is_BOMB(i+k, j+l) && !Game_over) {
+                                fields.opened_txt_field_set_FAIL_BOMB(i+k, j+l);
+                                CheckWrongBombs(fields);
+                                OpenAllBlocks(closed_img_field, fields);
+                            }
+                            SetIcons(i+k,j+l,closed_img_field,false,false,fields);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private void OpenAllBlocks(JLabel[][] closed_img_field, Fields fields) {
+        /*
+        Open all blocks if you lose
+         */
+        Game_over = true;
+        for (int i = 0; i < FIELD_LENGTH; i++) {
+            for (int j = 0; j < FIELD_LENGTH; j++) {
+                if (fields.opened_txt_field_is_ZERO_BOMBS(i, j)) {
+                    SetIcons(i, j, closed_img_field, true, false, fields);
+                } else SetIcons(i, j, closed_img_field, false, false, fields);
+
+            }
+        }
+    }
 
     private void CheckWrongBombs(Fields fields) {
         for (int i = 0; i < FIELD_LENGTH; i++) {
@@ -178,35 +232,29 @@ public class View_field extends JPanel {
         }
     }
 
-    private void OpenAllBlocks(JLabel[][] closed_img_field, Fields fields) {
-        Game_over = true;
-        for (int i = 0; i < FIELD_LENGTH; i++) {
-            for (int j = 0; j < FIELD_LENGTH; j++) {
-                if (fields.opened_txt_field_is_ZERO_BOMBS(i, j)) {
-                    SetIcons(i, j, closed_img_field, true, false, fields);
-                } else SetIcons(i, j, closed_img_field, false, false, fields);
+    private void RightMouseButtonHandler(int i, int j, JLabel[][] closed_img_field, Fields fields){
+        boolean RightMouseButton = true;
 
-            }
+        if (!fields.closed_txt_field_is_FLAG(i, j) && fields.closed_txt_field_is_CLOSED_SQUARE(i, j) && flags_count != 0) {
+            SetIcons(i, j, closed_img_field, false, RightMouseButton, fields);
+            flags_count--;
+        } else if (fields.closed_txt_field_is_FLAG(i, j)) {
+            SetIcons(i, j, closed_img_field, false, RightMouseButton, fields);
+            flags_count++;
         }
     }
+    private void LeftMouseButtonHandler(int i, int j, JLabel[][] closed_img_field, Fields fields) {
+        boolean RightMouseButton = false;
 
-    private void MouseListener(int i, int j, boolean right, JLabel[][] closed_img_field, Fields fields) {
-        if (!right) {
-            if (fields.closed_txt_field_is_CLOSED_SQUARE(i, j)) {
-                if (fields.opened_txt_field_is_BOMB(i, j) && !Game_over) {
-                    fields.opened_txt_field_set_FAIL_BOMB(i, j);
-                    CheckWrongBombs(fields);
-                    OpenAllBlocks(closed_img_field, fields);
-                } else SetIcons(i, j, closed_img_field, false, false, fields);
+        if (fields.closed_txt_field_is_CLOSED_SQUARE(i, j)) {
+            if (fields.opened_txt_field_is_BOMB(i, j) && !Game_over) {
+                fields.opened_txt_field_set_FAIL_BOMB(i, j);
+                CheckWrongBombs(fields);
+                OpenAllBlocks(closed_img_field, fields);
             }
-        } else if (right && !Game_over) {
-            if (!fields.closed_txt_field_is_FLAG(i, j) && fields.closed_txt_field_is_CLOSED_SQUARE(i, j) && flags_count != 0) {
-                SetIcons(i, j, closed_img_field, false, true, fields);
-                flags_count--;
-            } else if (fields.closed_txt_field_is_FLAG(i, j)) {
-                SetIcons(i, j, closed_img_field, false, true, fields);
-                flags_count++;
-            }
+            else SetIcons(i, j, closed_img_field, false, RightMouseButton, fields);
+        } else if (!fields.closed_txt_field_is_CLOSED_SQUARE(i, j) && !fields.closed_txt_field_is_FLAG(i, j)) {
+            OpenBlocksAround(i, j, closed_img_field, fields);
         }
     }
 }
