@@ -33,7 +33,7 @@ class View_field extends JPanel {
     int PANEL_LENGTH, PANEL_WIDTH;
     private int FIELD_LENGTH, FIELD_WIDTH;
 
-    View_field(Fields fields, int BOMBS_COUNT,int FIELD_LENGTH, int FIELD_WIDTH) {
+    View_field(Fields fields, int BOMBS_COUNT, int FIELD_LENGTH, int FIELD_WIDTH) {
         this.flags_count = BOMBS_COUNT;
         this.FIELD_LENGTH = FIELD_LENGTH;
         this.FIELD_WIDTH = FIELD_WIDTH;
@@ -69,20 +69,28 @@ class View_field extends JPanel {
                 System.out.println();
 
                 if (SwingUtilities.isLeftMouseButton(e)) {
-                    LeftMouseButtonHandler(i, j,closed_img_field, fields);
+                    LeftMouseButtonHandler(i, j, closed_img_field, fields);
                 }
                 if (SwingUtilities.isRightMouseButton(e) && !Game_over) {
                     RightMouseButtonHandler(i, j, closed_img_field, fields);
                 }
             }
+
             @Override
-            public void mousePressed(MouseEvent e) {}
+            public void mousePressed(MouseEvent e) {
+            }
+
             @Override
-            public void mouseReleased(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {
+            }
+
             @Override
-            public void mouseEntered(MouseEvent e) {}
+            public void mouseEntered(MouseEvent e) {
+            }
+
             @Override
-            public void mouseExited(MouseEvent e) {}
+            public void mouseExited(MouseEvent e) {
+            }
         });
     }
 
@@ -166,6 +174,7 @@ class View_field extends JPanel {
         OpenZeroBlocks(i - 1, j + 1, closed_img_field, fields);
         return;
     }
+
     private void OpenBlocksAround(int i, int j, JLabel[][] closed_img_field, Fields fields) {
         /*
         if you will click at number(which shows the number of bombs around),
@@ -173,38 +182,39 @@ class View_field extends JPanel {
         blocks around number will open. If flags will not
         install at bombs, you will lose.
          */
-        int flags_around = fields.opened_txt_field_get_information(i,j);
+        int flags_around = fields.opened_txt_field_get_information(i, j);
 
-        int kmax = i+1 < FIELD_LENGTH ? 2:1;
-        int lmax = j+1 < FIELD_LENGTH ? 2:1;
+        int kmax = i + 1 < FIELD_LENGTH ? 2 : 1;
+        int lmax = j + 1 < FIELD_LENGTH ? 2 : 1;
 
         //kmax, lmax, k and l are calculated to prevent ArrayIndexOutOfBoundsException.
 
-        for(int k = i-1 >= 0 ? -1:0; k < kmax; k++){
-            for(int l = j-1 >= 0 ? -1:0; l < lmax;l++){
+        for (int k = i - 1 >= 0 ? -1 : 0; k < kmax; k++) {
+            for (int l = j - 1 >= 0 ? -1 : 0; l < lmax; l++) {
                 if (k != 0 || l != 0) {
-                    if(fields.closed_txt_field_is_FLAG(i + k,j + l)) flags_around--;
+                    if (fields.closed_txt_field_is_FLAG(i + k, j + l)) flags_around--;
                 }
             }
         }
 
-        if(flags_around <= 0){ // if flags_around < 0, the user made a mistake
-            for(int k = i-1 >= 0 ? -1:0; k < kmax; k++){
-                for(int l = j-1 >= 0 ? -1:0; l < lmax;l++){
-                    if(k != 0 || l != 0){
-                        if(! fields.closed_txt_field_is_FLAG(i + k,j + l)){
-                            if (fields.opened_txt_field_is_BOMB(i+k, j+l) && !Game_over) {
-                                fields.opened_txt_field_set_FAIL_BOMB(i+k, j+l);
+        if (flags_around <= 0) { // if flags_around < 0, the user made a mistake
+            for (int k = i - 1 >= 0 ? -1 : 0; k < kmax; k++) {
+                for (int l = j - 1 >= 0 ? -1 : 0; l < lmax; l++) {
+                    if (k != 0 || l != 0) {
+                        if (!fields.closed_txt_field_is_FLAG(i + k, j + l)) {
+                            if (fields.opened_txt_field_is_BOMB(i + k, j + l) && !Game_over) {
+                                fields.opened_txt_field_set_FAIL_BOMB(i + k, j + l);
                                 CheckWrongBombs(fields);
                                 OpenAllBlocks(closed_img_field, fields);
                             }
-                            SetIcons(i+k,j+l,closed_img_field,false,false,fields);
+                            SetIcons(i + k, j + l, closed_img_field, false, false, fields);
                         }
                     }
                 }
             }
         }
     }
+
     private void OpenAllBlocks(JLabel[][] closed_img_field, Fields fields) {
         /*
         Open all blocks if you lose
@@ -232,7 +242,7 @@ class View_field extends JPanel {
         }
     }
 
-    private void RightMouseButtonHandler(int i, int j, JLabel[][] closed_img_field, Fields fields){
+    private void RightMouseButtonHandler(int i, int j, JLabel[][] closed_img_field, Fields fields) {
         boolean RightMouseButton = true;
 
         if (!fields.closed_txt_field_is_FLAG(i, j) && fields.closed_txt_field_is_CLOSED_SQUARE(i, j) && flags_count != 0) {
@@ -243,6 +253,7 @@ class View_field extends JPanel {
             flags_count++;
         }
     }
+
     private void LeftMouseButtonHandler(int i, int j, JLabel[][] closed_img_field, Fields fields) {
         boolean RightMouseButton = false;
 
@@ -251,8 +262,7 @@ class View_field extends JPanel {
                 fields.opened_txt_field_set_FAIL_BOMB(i, j);
                 CheckWrongBombs(fields);
                 OpenAllBlocks(closed_img_field, fields);
-            }
-            else SetIcons(i, j, closed_img_field, false, RightMouseButton, fields);
+            } else SetIcons(i, j, closed_img_field, false, RightMouseButton, fields);
         } else if (!fields.closed_txt_field_is_CLOSED_SQUARE(i, j) && !fields.closed_txt_field_is_FLAG(i, j)) {
             OpenBlocksAround(i, j, closed_img_field, fields);
         }

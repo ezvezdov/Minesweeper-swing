@@ -7,7 +7,7 @@ public class View {
 
     View(Fields fields) {
 
-        View_field game_field = new View_field(fields, fields.BOMBS_COUNT,fields.FIELD_LENGTH,fields.FIELD_WIDTH);
+        View_field game_field = new View_field(fields, fields.BOMBS_COUNT, fields.FIELD_LENGTH, fields.FIELD_WIDTH);
 
         //game_field.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         game_field.setBackground(Color.red);
