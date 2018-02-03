@@ -6,8 +6,13 @@ class Fields {
 
     final static int FIELD_LENGTH = 16;
     final static int FIELD_WIDTH = 16;
-    final static int BOMBS_COUNT = (int) ((FIELD_LENGTH * FIELD_WIDTH) / 6.4); //6.4 is const which help to find BOMBS_COUNT (at 16*16 field should be 40 bombs => 6.4 = 256/40)
-
+    final static int BOMBS_COUNT = (int) ((FIELD_LENGTH * FIELD_WIDTH) / 6.4);
+    /*
+    6.4(at default)(which was used at BOMBS_COUNT) is BombCoefficient,
+    which help to find BOMBS_COUNT (at 16*16 field should be 40 bombs => 6.4 = 256/40).
+    If you want to change the count of bombs , you should change BombCoefficient(6.4 at default).
+    The more the BombCoefficient, the more bombs.
+     */
     private char[][] opened_txt_field = new char[FIELD_LENGTH][FIELD_WIDTH];
     private char[][] closed_txt_field = new char[FIELD_LENGTH][FIELD_WIDTH];
 
@@ -30,7 +35,7 @@ class Fields {
 
     Fields() {
         /*
-        Generate all arrays.
+        Generate all fields.
          */
         init_opened_txt_field(opened_txt_field);
         init_closed_txt_field(closed_txt_field);
@@ -97,6 +102,9 @@ class Fields {
     }
 
     private void print_opened_txt_field() {
+        /*
+        Tmp function, which print opened_txt_field.
+         */
         System.out.println(BOMBS_COUNT);
         for (int i = 0; i < FIELD_LENGTH; i++) {
             for (int j = 0; j < FIELD_WIDTH; j++) {
