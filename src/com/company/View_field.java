@@ -10,8 +10,7 @@ import java.io.File;
 import java.io.IOException;
 
 class View_field extends JPanel {
-    //  if you wont to change icons to 64x64 or 16x16, you should and change SQUARE_PX to 64 or 16;
-    final private int SQUARE_PX = 32;  //side length of a square (px)
+    private int SQUARE_PX;
     private boolean Game_over = false; //if Game_over == true, clicks will not work
     final private int IconsCount = 14;
 
@@ -55,13 +54,15 @@ class View_field extends JPanel {
     }
 
     private int flags_count;
-    int PANEL_LENGTH, PANEL_WIDTH;
     private int FIELD_LENGTH, FIELD_WIDTH;
+    int PANEL_LENGTH, PANEL_WIDTH;
 
-    View_field(Fields fields, int BOMBS_COUNT, int FIELD_LENGTH, int FIELD_WIDTH) {
+
+    View_field(Fields fields, StatusBar statusBar, int BOMBS_COUNT, int FIELD_LENGTH, int FIELD_WIDTH, int SQUARE_PX) {
         this.flags_count = BOMBS_COUNT;
         this.FIELD_LENGTH = FIELD_LENGTH;
         this.FIELD_WIDTH = FIELD_WIDTH;
+        this.SQUARE_PX = SQUARE_PX;
 
         IconsInit();
 
@@ -72,13 +73,14 @@ class View_field extends JPanel {
         this.PANEL_LENGTH = SQUARE_PX * FIELD_LENGTH + 29; // I don't know, why without 29 and 6 not working
         this.PANEL_WIDTH = SQUARE_PX * FIELD_WIDTH + 6;
 
+
         System.out.print(PANEL_LENGTH);
         System.out.print(" ");
         System.out.print(PANEL_WIDTH);
 
 
-        this.setSize(PANEL_WIDTH, PANEL_LENGTH);
-        this.setLayout(new GridLayout(FIELD_LENGTH, FIELD_WIDTH));
+        this.setBounds(0, SQUARE_PX * 2, SQUARE_PX * fields.FIELD_WIDTH, SQUARE_PX * fields.FIELD_LENGTH);
+
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -99,11 +101,13 @@ class View_field extends JPanel {
                 System.out.println(i);
                 System.out.println();
 
+                if (i >= FIELD_LENGTH || i >= FIELD_WIDTH) return;
+
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     LeftMouseButtonHandler(i, j, fields);
                 }
                 if (SwingUtilities.isRightMouseButton(e) && !Game_over) {
-                    RightMouseButtonHandler(i, j, fields);
+                    RightMouseButtonHandler(i, j, fields, statusBar);
                 }
             }
 
@@ -275,14 +279,16 @@ class View_field extends JPanel {
         }
     }
 
-    private void RightMouseButtonHandler(int i, int j, Fields fields) {
+    private void RightMouseButtonHandler(int i, int j, Fields fields, StatusBar statusBar) {
         if (!fields.closed_txt_field_is_FLAG(i, j) && fields.closed_txt_field_is_CLOSED_SQUARE(i, j) && flags_count != 0) {
             SetIcons(i, j, false, true, false, fields);
             flags_count--;
         } else if (fields.closed_txt_field_is_FLAG(i, j)) {
             SetIcons(i, j, false, true, false, fields);
             flags_count++;
-        }
+        } else return;
+        statusBar.ChangeFlagsCounter(flags_count);
+
     }
 
     private void LeftMouseButtonHandler(int i, int j, Fields fields) {
