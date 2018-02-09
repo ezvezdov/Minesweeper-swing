@@ -23,5 +23,4 @@ public class View {
 
         window.setVisible(true);
     }
-
 }
