@@ -14,7 +14,6 @@ public class View extends JFrame {
 
         AddNewComponents(fields);
 
-
         final Boolean RESIZABLE = false;
         final Boolean visible= true;
 
@@ -28,7 +27,7 @@ public class View extends JFrame {
 
     private void AddNewComponents(Fields fields){
         View_field game_field = new View_field(fields, fields.BOMBS_COUNT, fields.FIELD_LENGTH, fields.FIELD_WIDTH);
-        View_StatusBar StatusBar= new View_StatusBar(this);
+        StatusBar StatusBar= new StatusBar(this);
         this.WINDOW_LENGTH = game_field.PANEL_LENGTH + 32*2;
         this.WINDOW_WIDTH = game_field.PANEL_WIDTH ;
 
@@ -40,7 +39,6 @@ public class View extends JFrame {
     public void Restart(){
         Fields fields = new Fields();
         AddNewComponents(fields);
-
     }
 
 }
