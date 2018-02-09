@@ -1,27 +1,46 @@
 package com.company;
 
 import javax.swing.*;
+import java.awt.*;
 
-public class View {
+public class View extends JFrame {
+
+    final private String WINDOW_TITLE = "Minesweeper";
+
+    int WINDOW_LENGTH;
+    int WINDOW_WIDTH;
 
     View(Fields fields) {
-        /*
-        Making window,graphics
-         */
-        View_field game_field = new View_field(fields, fields.BOMBS_COUNT, fields.FIELD_LENGTH, fields.FIELD_WIDTH);
 
-        final int WINDOW_LENGTH = game_field.PANEL_LENGTH;
-        final int WINDOW_WIDTH = game_field.PANEL_WIDTH;
-        final String WINDOW_TITLE = "Minesweeper";
+        AddNewComponents(fields);
+
+
         final Boolean RESIZABLE = false;
+        final Boolean visible= true;
 
-        JFrame window = new JFrame(WINDOW_TITLE);
-        window.setSize(WINDOW_WIDTH, WINDOW_LENGTH);
-        window.setResizable(RESIZABLE);
+        this.setLayout(new BorderLayout());
+        this.setTitle(WINDOW_TITLE);
+        this.setSize(WINDOW_WIDTH, WINDOW_LENGTH);
+        this.setResizable(RESIZABLE);
 
-        window.add(game_field);
+        this.setVisible(visible);
+    }
 
-        window.setVisible(true);
+    private void AddNewComponents(Fields fields){
+        View_field game_field = new View_field(fields, fields.BOMBS_COUNT, fields.FIELD_LENGTH, fields.FIELD_WIDTH);
+        View_StatusBar StatusBar= new View_StatusBar(this);
+        this.WINDOW_LENGTH = game_field.PANEL_LENGTH + 32*2;
+        this.WINDOW_WIDTH = game_field.PANEL_WIDTH ;
+
+
+        this.add(game_field, BorderLayout.BEFORE_FIRST_LINE);
+        this.add(StatusBar,BorderLayout.AFTER_LAST_LINE);
+    }
+
+    public void Restart(){
+        Fields fields = new Fields();
+        AddNewComponents(fields);
+
     }
 
 }

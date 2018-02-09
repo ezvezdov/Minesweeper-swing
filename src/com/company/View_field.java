@@ -45,7 +45,6 @@ class View_field extends JPanel {
 
         try {
             for (int i = 0; i < IconsCount; i++) {
-                System.out.println(FileNamePart + ImageName[i]);
                 Icons[i] = ImageIO.read(new File(FileNamePart + ImageName[i]));
             }
         } catch (IOException ex) {
