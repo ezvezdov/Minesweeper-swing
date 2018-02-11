@@ -30,7 +30,7 @@ public class StatusBar extends JPanel {
         NGButton.setFocusPainted(false);
 
         Flags.setText(Integer.toString(BOMBS_COUNT));
-        Flags.setPreferredSize(new Dimension(SQUARE_PX * 5, SQUARE_PX * 2));
+        Flags.setPreferredSize(new Dimension(SQUARE_PX * 5, SQUARE_PX));
         Flags.setFont(Flags.getFont().deriveFont(40f));
 
         JLabel Timer = new JLabel("Time");
