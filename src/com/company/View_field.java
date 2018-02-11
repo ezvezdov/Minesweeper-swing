@@ -57,8 +57,7 @@ class View_field extends JPanel {
     private int FIELD_LENGTH, FIELD_WIDTH;
     int PANEL_LENGTH, PANEL_WIDTH;
 
-
-    View_field(Fields fields, StatusBar statusBar, int BOMBS_COUNT, int FIELD_LENGTH, int FIELD_WIDTH, int SQUARE_PX) {
+    View_field(Board board,View window, int BOMBS_COUNT, int FIELD_LENGTH, int FIELD_WIDTH, int SQUARE_PX) {
         this.flags_count = BOMBS_COUNT;
         this.FIELD_LENGTH = FIELD_LENGTH;
         this.FIELD_WIDTH = FIELD_WIDTH;
@@ -67,7 +66,7 @@ class View_field extends JPanel {
         IconsInit();
 
         closed_img_field = new BufferedImage[FIELD_LENGTH][FIELD_WIDTH];
-        InitClosed_img_field(fields);
+        InitClosed_img_field(board);
 
 
         this.PANEL_LENGTH = SQUARE_PX * FIELD_LENGTH + 29; // I don't know, why without 29 and 6 not working
@@ -79,11 +78,17 @@ class View_field extends JPanel {
         System.out.print(PANEL_WIDTH);
 
 
-        this.setBounds(0, SQUARE_PX * 2, SQUARE_PX * fields.FIELD_WIDTH, SQUARE_PX * fields.FIELD_LENGTH);
+        this.setBounds(0, SQUARE_PX * 2, SQUARE_PX * board.FIELD_WIDTH, SQUARE_PX * board.FIELD_LENGTH);
 
+        final boolean[] first_click = {false};
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(!first_click[0]){
+                    first_click[0] = true;
+                    window.setTimer();
+                }
+
                 int x = e.getX();
                 int y = e.getY();
 
@@ -104,10 +109,10 @@ class View_field extends JPanel {
                 if (i >= FIELD_LENGTH || i >= FIELD_WIDTH) return;
 
                 if (SwingUtilities.isLeftMouseButton(e)) {
-                    LeftMouseButtonHandler(i, j, fields);
+                    LeftMouseButtonHandler(i, j, board);
                 }
                 if (SwingUtilities.isRightMouseButton(e) && !Game_over) {
-                    RightMouseButtonHandler(i, j, fields, statusBar);
+                    RightMouseButtonHandler(i, j, board,window);
                 }
             }
 
@@ -130,96 +135,96 @@ class View_field extends JPanel {
 
     }
 
-    private void InitClosed_img_field(Fields fields) {
+    private void InitClosed_img_field(Board board) {
         for (int i = 0; i < FIELD_LENGTH; i++) {
             for (int j = 0; j < FIELD_WIDTH; j++) {
-                SetIcons(i, j, false, false, true, fields);
+                SetIcons(i, j, false, false, true, board);
             }
         }
     }
 
-    private void SetIcons(int i, int j, boolean IsZeroSetIcon, boolean RightMouseButton, boolean InitClosed_img_field, Fields fields) {
+    private void SetIcons(int i, int j, boolean IsZeroSetIcon, boolean RightMouseButton, boolean InitClosed_img_field, Board board) {
         if (InitClosed_img_field) {
             closed_img_field[i][j] = Icons[CLOSED_SQUARE_ICON];
-        } else if (fields.closed_txt_field_is_FLAG(i, j) && RightMouseButton) {
+        } else if (board.ClosedBoard_is_FLAG(i, j) && RightMouseButton) {
             closed_img_field[i][j] = Icons[CLOSED_SQUARE_ICON];
-            fields.closed_txt_field_set_CLOSED_SQUARE(i, j);
-        } else if (fields.closed_txt_field_is_CLOSED_SQUARE(i, j) && RightMouseButton) {
+            board.ClosedBoard_set_CLOSED_SQUARE(i, j);
+        } else if (board.ClosedBoard_is_CLOSED_SQUARE(i, j) && RightMouseButton) {
             closed_img_field[i][j] = Icons[FLAG_ICON];
-            fields.closed_txt_field_set_FLAG(i, j);
-        } else if (fields.opened_txt_field_is_WRONG_BOMB(i, j)) {
+            board.ClosedBoard_set_FLAG(i, j);
+        } else if (board.OpenedBoard_is_WRONG_BOMB(i, j)) {
             closed_img_field[i][j] = Icons[WRONG_BOMB_ICON];
         } else if (IsZeroSetIcon && !RightMouseButton) {
             closed_img_field[i][j] = Icons[ZERO_BOMBS_ICON];
-            fields.closed_txt_field_set_ZERO_BOMBS(i, j);
-        } else if (fields.opened_txt_field_is_ZERO_BOMBS(i, j) && !RightMouseButton) {
-            OpenZeroBlocks(i, j, fields);
-        } else if (fields.opened_txt_field_is_ONE_BOMBS(i, j) && !RightMouseButton) {
+            board.ClosedBoard_set_ZERO_BOMBS(i, j);
+        } else if (board.OpenedBoard_is_ZERO_BOMBS(i, j) && !RightMouseButton) {
+            OpenZeroBlocks(i, j, board);
+        } else if (board.OpenedBoard_is_ONE_BOMBS(i, j) && !RightMouseButton) {
             closed_img_field[i][j] = Icons[ONE_BOMBS_ICON];
-            fields.closed_txt_field_set_ONE_BOMBS(i, j);
-        } else if (fields.opened_txt_field_is_TWO_BOMBS(i, j) && !RightMouseButton) {
+            board.ClosedBoard_set_ONE_BOMBS(i, j);
+        } else if (board.OpenedBoard_is_TWO_BOMBS(i, j) && !RightMouseButton) {
             closed_img_field[i][j] = Icons[TWO_BOMBS_ICON];
-            fields.closed_txt_field_set_TWO_BOMBS(i, j);
-        } else if (fields.opened_txt_field_is_THREE_BOMBS(i, j) && !RightMouseButton) {
+            board.ClosedBoard_set_TWO_BOMBS(i, j);
+        } else if (board.OpenedBoard_is_THREE_BOMBS(i, j) && !RightMouseButton) {
             closed_img_field[i][j] = Icons[THREE_BOMBS_ICON];
-            fields.closed_txt_field_set_THREE_BOMBS(i, j);
-        } else if (fields.opened_txt_field_is_FOUR_BOMBS(i, j) && !RightMouseButton) {
+            board.ClosedBoard_set_THREE_BOMBS(i, j);
+        } else if (board.OpenedBoard_is_FOUR_BOMBS(i, j) && !RightMouseButton) {
             closed_img_field[i][j] = Icons[FOUR_BOMBS_ICON];
-            fields.closed_txt_field_set_FOUR_BOMBS(i, j);
-        } else if (fields.opened_txt_field_is_FIVE_BOMBS(i, j) && !RightMouseButton) {
+            board.ClosedBoard_set_FOUR_BOMBS(i, j);
+        } else if (board.OpenedBoard_is_FIVE_BOMBS(i, j) && !RightMouseButton) {
             closed_img_field[i][j] = Icons[FIVE_BOMBS_ICON];
-            fields.closed_txt_field_set_FIVE_BOMBS(i, j);
-        } else if (fields.opened_txt_field_is_SIX_BOMBS(i, j) && !RightMouseButton) {
+            board.ClosedBoard_set_FIVE_BOMBS(i, j);
+        } else if (board.OpenedBoard_is_SIX_BOMBS(i, j) && !RightMouseButton) {
             closed_img_field[i][j] = Icons[SIX_BOMBS_ICON];
-            fields.closed_txt_field_set_SIX_BOMBS(i, j);
-        } else if (fields.opened_txt_field_is_SEVEN_BOMBS(i, j) && !RightMouseButton) {
+            board.ClosedBoard_set_SIX_BOMBS(i, j);
+        } else if (board.OpenedBoard_is_SEVEN_BOMBS(i, j) && !RightMouseButton) {
             closed_img_field[i][j] = Icons[SEVEN_BOMBS_ICON];
-            fields.closed_txt_field_set_SEVEN_BOMBS(i, j);
-        } else if (fields.opened_txt_field_is_EIGHT_BOMBS(i, j) && !RightMouseButton) {
+            board.ClosedBoard_set_SEVEN_BOMBS(i, j);
+        } else if (board.OpenedBoard_is_EIGHT_BOMBS(i, j) && !RightMouseButton) {
             closed_img_field[i][j] = Icons[EIGHT_BOMBS_ICON];
-            fields.closed_txt_field_set_EIGHT_BOMBS(i, j);
-        } else if (fields.closed_txt_field_is_FLAG(i, j) && !RightMouseButton) {
+            board.ClosedBoard_set_EIGHT_BOMBS(i, j);
+        } else if (board.ClosedBoard_is_FLAG(i, j) && !RightMouseButton) {
             closed_img_field[i][j] = Icons[FLAG_ICON];
-        } else if (fields.opened_txt_field_is_BOMB(i, j) && !RightMouseButton) {
+        } else if (board.OpenedBoard_is_BOMB(i, j) && !RightMouseButton) {
             closed_img_field[i][j] = Icons[BOMB_ICON];
-        } else if (fields.opened_txt_field_is_FAIL_BOMB(i, j) && !RightMouseButton) {
+        } else if (board.OpenedBoard_is_FAIL_BOMB(i, j) && !RightMouseButton) {
             closed_img_field[i][j] = Icons[FAIL_BOMB_ICON];
         }
         this.repaint();
     }
 
-    private void OpenZeroBlocks(int i, int j, Fields fields) {
+    private void OpenZeroBlocks(int i, int j, Board board) {
         /*
         If you clicked at block, where 0 bomb around. It's fill algorithm.
          */
-        if (i == -1 || i == FIELD_LENGTH || j == -1 || j == FIELD_WIDTH || fields.closed_txt_field_is_FLAG(i, j))
+        if (i == -1 || i == FIELD_LENGTH || j == -1 || j == FIELD_WIDTH || board.ClosedBoard_is_FLAG(i, j))
             return;
-        if (!fields.opened_txt_field_is_ZERO_BOMBS(i, j)) {
-            SetIcons(i, j, false, false, false, fields);
+        if (!board.OpenedBoard_is_ZERO_BOMBS(i, j)) {
+            SetIcons(i, j, false, false, false, board);
         }
-        if (!fields.opened_txt_field_is_ZERO_BOMBS(i, j) || fields.closed_txt_field_is_ZERO_BOMBS(i, j)) return;
-        if (fields.opened_txt_field_is_ZERO_BOMBS(i, j)) {
-            SetIcons(i, j, true, false, false, fields);
+        if (!board.OpenedBoard_is_ZERO_BOMBS(i, j) || board.ClosedBoard_is_ZERO_BOMBS(i, j)) return;
+        if (board.OpenedBoard_is_ZERO_BOMBS(i, j)) {
+            SetIcons(i, j, true, false, false, board);
         }
-        OpenZeroBlocks(i, j - 1, fields);
-        OpenZeroBlocks(i, j + 1, fields);
-        OpenZeroBlocks(i - 1, j, fields);
-        OpenZeroBlocks(i + 1, j, fields);
-        OpenZeroBlocks(i + 1, j - 1, fields);
-        OpenZeroBlocks(i + 1, j + 1, fields);
-        OpenZeroBlocks(i - 1, j - 1, fields);
-        OpenZeroBlocks(i - 1, j + 1, fields);
+        OpenZeroBlocks(i, j - 1, board);
+        OpenZeroBlocks(i, j + 1, board);
+        OpenZeroBlocks(i - 1, j, board);
+        OpenZeroBlocks(i + 1, j, board);
+        OpenZeroBlocks(i + 1, j - 1, board);
+        OpenZeroBlocks(i + 1, j + 1, board);
+        OpenZeroBlocks(i - 1, j - 1, board);
+        OpenZeroBlocks(i - 1, j + 1, board);
         return;
     }
 
-    private void OpenBlocksAround(int i, int j, Fields fields) {
+    private void OpenBlocksAround(int i, int j, Board board) {
         /*
         if you will click at number(which shows the number of bombs around),
         and flags_count around number == number,
         blocks around number will open. If flags will not
         install at bombs, you will lose.
          */
-        int flags_around = fields.opened_txt_field_get_information(i, j);
+        int flags_around = board.getOpenedBoardInformation(i, j);
 
         int kmax = i + 1 < FIELD_LENGTH ? 2 : 1;
         int lmax = j + 1 < FIELD_LENGTH ? 2 : 1;
@@ -229,7 +234,7 @@ class View_field extends JPanel {
         for (int k = i - 1 >= 0 ? -1 : 0; k < kmax; k++) {
             for (int l = j - 1 >= 0 ? -1 : 0; l < lmax; l++) {
                 if (k != 0 || l != 0) {
-                    if (fields.closed_txt_field_is_FLAG(i + k, j + l)) flags_around--;
+                    if (board.ClosedBoard_is_FLAG(i + k, j + l)) flags_around--;
                 }
             }
         }
@@ -238,13 +243,13 @@ class View_field extends JPanel {
             for (int k = i - 1 >= 0 ? -1 : 0; k < kmax; k++) {
                 for (int l = j - 1 >= 0 ? -1 : 0; l < lmax; l++) {
                     if (k != 0 || l != 0) {
-                        if (!fields.closed_txt_field_is_FLAG(i + k, j + l)) {
-                            if (fields.opened_txt_field_is_BOMB(i + k, j + l) && !Game_over) {
-                                fields.opened_txt_field_set_FAIL_BOMB(i + k, j + l);
-                                CheckWrongBombs(fields);
-                                OpenAllBlocks(fields);
+                        if (!board.ClosedBoard_is_FLAG(i + k, j + l)) {
+                            if (board.OpenedBoard_is_BOMB(i + k, j + l) && !Game_over) {
+                                board.OpenedBoard_set_FAIL_BOMB(i + k, j + l);
+                                CheckWrongBombs(board);
+                                OpenAllBlocks(board);
                             }
-                            SetIcons(i + k, j + l, false, false, false, fields);
+                            SetIcons(i + k, j + l, false, false, false, board);
                         }
                     }
                 }
@@ -252,54 +257,54 @@ class View_field extends JPanel {
         }
     }
 
-    private void OpenAllBlocks(Fields fields) {
+    private void OpenAllBlocks(Board board) {
         /*
         Open all blocks if you lose
          */
         Game_over = true;
         for (int i = 0; i < FIELD_LENGTH; i++) {
             for (int j = 0; j < FIELD_LENGTH; j++) {
-                if (fields.opened_txt_field_is_ZERO_BOMBS(i, j)) {
-                    SetIcons(i, j, true, false, false, fields);
-                } else SetIcons(i, j, false, false, false, fields);
+                if (board.OpenedBoard_is_ZERO_BOMBS(i, j)) {
+                    SetIcons(i, j, true, false, false, board);
+                } else SetIcons(i, j, false, false, false, board);
 
             }
         }
     }
 
-    private void CheckWrongBombs(Fields fields) {
+    private void CheckWrongBombs(Board board) {
         for (int i = 0; i < FIELD_LENGTH; i++) {
             for (int j = 0; j < FIELD_LENGTH; j++) {
-                if (fields.closed_txt_field_is_FLAG(i, j)) {
-                    if (!fields.opened_txt_field_is_BOMB(i, j)) {
-                        fields.opened_txt_field_set_WRONG_BOMB(i, j);
+                if (board.ClosedBoard_is_FLAG(i, j)) {
+                    if (!board.OpenedBoard_is_BOMB(i, j)) {
+                        board.OpenedBoard_set_WRONG_BOMB(i, j);
                     }
                 }
             }
         }
     }
 
-    private void RightMouseButtonHandler(int i, int j, Fields fields, StatusBar statusBar) {
-        if (!fields.closed_txt_field_is_FLAG(i, j) && fields.closed_txt_field_is_CLOSED_SQUARE(i, j) && flags_count != 0) {
-            SetIcons(i, j, false, true, false, fields);
+    private void RightMouseButtonHandler(int i, int j, Board board, View window) {
+        if (!board.ClosedBoard_is_FLAG(i, j) && board.ClosedBoard_is_CLOSED_SQUARE(i, j) && flags_count != 0) {
+            SetIcons(i, j, false, true, false, board);
             flags_count--;
-        } else if (fields.closed_txt_field_is_FLAG(i, j)) {
-            SetIcons(i, j, false, true, false, fields);
+        } else if (board.ClosedBoard_is_FLAG(i, j)) {
+            SetIcons(i, j, false, true, false, board);
             flags_count++;
         } else return;
-        statusBar.ChangeFlagsCounter(flags_count);
+        window.StatusBarUpdate(flags_count);
 
     }
 
-    private void LeftMouseButtonHandler(int i, int j, Fields fields) {
-        if (fields.closed_txt_field_is_CLOSED_SQUARE(i, j)) {
-            if (fields.opened_txt_field_is_BOMB(i, j) && !Game_over) {
-                fields.opened_txt_field_set_FAIL_BOMB(i, j);
-                CheckWrongBombs(fields);
-                OpenAllBlocks(fields);
-            } else SetIcons(i, j, false, false, false, fields);
-        } else if (!fields.closed_txt_field_is_CLOSED_SQUARE(i, j) && !fields.closed_txt_field_is_FLAG(i, j)) {
-            OpenBlocksAround(i, j, fields);
+    private void LeftMouseButtonHandler(int i, int j, Board board) {
+        if (board.ClosedBoard_is_CLOSED_SQUARE(i, j)) {
+            if (board.OpenedBoard_is_BOMB(i, j) && !Game_over) {
+                board.OpenedBoard_set_FAIL_BOMB(i, j);
+                CheckWrongBombs(board);
+                OpenAllBlocks(board);
+            } else SetIcons(i, j, false, false, false, board);
+        } else if (!board.ClosedBoard_is_CLOSED_SQUARE(i, j) && !board.ClosedBoard_is_FLAG(i, j)) {
+            OpenBlocksAround(i, j, board);
         }
     }
 
