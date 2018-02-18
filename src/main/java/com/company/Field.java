@@ -12,24 +12,24 @@ class Field extends JPanel {
 
     private BufferedImage[][] closed_img_field;
 
-    private int FIELD_LENGTH, FIELD_WIDTH;
+    private int BOARD_LENGTH, BOARD_WIDTH;
     int PANEL_LENGTH, PANEL_WIDTH;
 
 
-    Field(Board board, View window,int FIELD_LENGTH, int FIELD_WIDTH, int SQUARE_PX) {
+    Field(Board board, View window,int BOARD_LENGTH, int BOARD_WIDTH, int SQUARE_PX) {
         //this.flags_count = BOMBS_COUNT;
-        this.FIELD_LENGTH = FIELD_LENGTH;
-        this.FIELD_WIDTH = FIELD_WIDTH;
+        this.BOARD_LENGTH = BOARD_LENGTH;
+        this.BOARD_WIDTH = BOARD_WIDTH;
         this.SQUARE_PX = SQUARE_PX;
 
-        closed_img_field = new BufferedImage[FIELD_LENGTH][FIELD_WIDTH];
+        closed_img_field = new BufferedImage[BOARD_LENGTH][BOARD_WIDTH];
         window.InitBoard(closed_img_field);
         this.repaint();
 
-        this.PANEL_LENGTH = SQUARE_PX * FIELD_LENGTH + 29; // I don't know, why without 29 and 6 not working
-        this.PANEL_WIDTH = SQUARE_PX * FIELD_WIDTH + 6;
+        this.PANEL_LENGTH = SQUARE_PX * BOARD_LENGTH + 29; // I don't know, why without 29 and 6 not working
+        this.PANEL_WIDTH = SQUARE_PX * BOARD_WIDTH + 6;
 
-        this.setBounds(0, SQUARE_PX * 2, SQUARE_PX * board.FIELD_WIDTH, SQUARE_PX * board.FIELD_LENGTH);
+        this.setBounds(0, SQUARE_PX * 2, SQUARE_PX * board.BOARD_WIDTH, SQUARE_PX * board.BOARD_LENGTH);
 
         final boolean[] first_click = {false};
         this.addMouseListener(new MouseListener() {
@@ -57,7 +57,7 @@ class Field extends JPanel {
                 System.out.println(i);
                 System.out.println();
 
-                if (i >= FIELD_LENGTH || i >= FIELD_WIDTH) return;
+                if (i >= BOARD_LENGTH || i >= BOARD_WIDTH) return;
 
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     window.BoardHandler(board,closed_img_field,0,i,j);
@@ -84,8 +84,8 @@ class Field extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (int i = 0; i < FIELD_LENGTH; i++) {
-            for (int j = 0; j < FIELD_WIDTH; j++) {
+        for (int i = 0; i < BOARD_LENGTH; i++) {
+            for (int j = 0; j < BOARD_WIDTH; j++) {
                 g.drawImage(closed_img_field[i][j], j * SQUARE_PX, i * SQUARE_PX, this);
             }
         }

@@ -9,29 +9,33 @@ public class StatusBar extends JPanel {
 
 
     int PANEL_HEIGHT;
+    int BOADRD_WIDTH;
 
     JLabel Time;
     JLabel Flags = new JLabel();
 
-    StatusBar(View window, int SQUARE_PX, int BOMBS_COUNT) {
+    StatusBar(View window,int BOARD_WIDTH, int SQUARE_PX, int BOMBS_COUNT) {
         this.PANEL_HEIGHT = SQUARE_PX * 2;
+        this.BOADRD_WIDTH = BOARD_WIDTH;
+
         this.setBackground(Color.YELLOW);
 
         this.setLayout(null);
-        this.setBounds(0, 0, SQUARE_PX * 16, PANEL_HEIGHT);
+        this.setBounds(0, 0, SQUARE_PX * BOARD_WIDTH, PANEL_HEIGHT);
 
-        JButton NGButton = new JButton("New Game");
-        NGButton.setFont(NGButton.getFont().deriveFont(25f));
-        NGButton.setBounds(0,0,SQUARE_PX*5,PANEL_HEIGHT);
+        JButton NGButton = new JButton("New");
+        NGButton.setBounds(0,0,(SQUARE_PX*BOADRD_WIDTH)/3,PANEL_HEIGHT);
+        NGButton.setFont(NGButton.getFont().deriveFont(SQUARE_PX*BOADRD_WIDTH/3  / 3.5f));
         NGButton.setFocusPainted(false);
 
+        Time = new JLabel("00:00");
+        Time.setBounds((SQUARE_PX*BOADRD_WIDTH)/3,0,(SQUARE_PX*BOADRD_WIDTH)/3,PANEL_HEIGHT);
+        Time.setFont(Flags.getFont().deriveFont(40f));
+
         Flags.setText(Integer.toString(BOMBS_COUNT));
-        Flags.setBounds(SQUARE_PX*10,0,SQUARE_PX*5,PANEL_HEIGHT);
+        Flags.setBounds((SQUARE_PX*BOADRD_WIDTH)/3 * 2,0,(SQUARE_PX*BOADRD_WIDTH)/3,PANEL_HEIGHT);
         Flags.setFont(Flags.getFont().deriveFont(40f));
 
-        Time = new JLabel("00:00");
-        Time.setBounds(SQUARE_PX*5,0,SQUARE_PX*5,PANEL_HEIGHT);
-        Time.setFont(Flags.getFont().deriveFont(40f));
 
         this.add(NGButton);
         this.add(Time);

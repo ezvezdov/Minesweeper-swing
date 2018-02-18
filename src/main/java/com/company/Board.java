@@ -4,9 +4,9 @@ import java.util.Random;
 
 class Board {
 
-    final static int FIELD_LENGTH = 16;
-    final static int FIELD_WIDTH = 16;
-    final static int BOMBS_COUNT = (int) ((FIELD_LENGTH * FIELD_WIDTH) / 6.4);
+    final static int BOARD_LENGTH = 16;
+    final static int BOARD_WIDTH = 16;
+    final static int BOMBS_COUNT = (int) ((BOARD_LENGTH * BOARD_WIDTH) / 6.4);
     /*
     6.4(at default)(which was used at BOMBS_COUNT) is BombCoefficient,
     which help to find BOMBS_COUNT (at 16*16 field should be 40 bombs => 6.4 = 256/40).
@@ -14,11 +14,11 @@ class Board {
     The more the BombCoefficient, the more bombs.
      */
 
-    // FIELD_LENGTH = i; FIELD_WIDTH = j;
+    // BOARD_LENGTH = i; BOARD_WIDTH = j;
 
     enum BoardSymbols {CLOSED_SQUARE,BOMB,WRONG_BOMB,FLAG,FAIL_BOMB,ZERO_BOMBS,ONE_BOMBS,TWO_BOMBS,THREE_BOMBS,FOUR_BOMBS,FIVE_BOMBS,SIX_BOMBS,SEVEN_BOMBS,EIGHT_BOMBS};
-    private BoardSymbols[][] OpenedBoard = new BoardSymbols[FIELD_LENGTH][FIELD_WIDTH];
-    private BoardSymbols[][] ClosedBoard = new BoardSymbols[FIELD_LENGTH][FIELD_WIDTH];
+    private BoardSymbols[][] OpenedBoard = new BoardSymbols[BOARD_LENGTH][BOARD_WIDTH];
+    private BoardSymbols[][] ClosedBoard = new BoardSymbols[BOARD_LENGTH][BOARD_WIDTH];
 
     Board() {
         /*
@@ -41,8 +41,8 @@ class Board {
         /*
         Clear OpenedBoard XD...
          */
-        for (int i = 0; i < FIELD_LENGTH; i++) {
-            for (int j = 0; j < FIELD_WIDTH; j++) {
+        for (int i = 0; i < BOARD_LENGTH; i++) {
+            for (int j = 0; j < BOARD_WIDTH; j++) {
                 board[i][j] = BoardSymbols.ZERO_BOMBS;
             }
         }
@@ -54,12 +54,12 @@ class Board {
         Random random = new Random();
         int i1, i2;
         for (int i = BOMBS_COUNT; i > 0; i--) {
-            i1 = random.nextInt(FIELD_LENGTH);
-            i2 = random.nextInt(FIELD_WIDTH);
+            i1 = random.nextInt(BOARD_LENGTH);
+            i2 = random.nextInt(BOARD_WIDTH);
             if (board[i1][i2] == BoardSymbols.BOMB) {
                 while (board[i1][i2] == BoardSymbols.BOMB) {
-                    i1 = random.nextInt(FIELD_LENGTH);
-                    i2 = random.nextInt(FIELD_WIDTH);
+                    i1 = random.nextInt(BOARD_LENGTH);
+                    i2 = random.nextInt(BOARD_WIDTH);
                 }
             }
             board[i1][i2] = BoardSymbols.BOMB;
@@ -70,23 +70,23 @@ class Board {
         Generation number of bombs around
          */
         int ctn;
-        for (int i = 0; i < FIELD_LENGTH; i++) {
-            for (int j = 0; j < FIELD_WIDTH; j++) {
+        for (int i = 0; i < BOARD_LENGTH; i++) {
+            for (int j = 0; j < BOARD_WIDTH; j++) {
                 ctn = 0;
                 if (OpenedBoard_is_ZERO_BOMBS(i,j)) {
                     if (i - 1 >= 0) {
 
                         if (j - 1 >= 0 && board[i-1][j-1] == BoardSymbols.BOMB) ctn += 1;
                         if (board[i-1][j] == BoardSymbols.BOMB) ctn += 1;
-                        if (j + 1 < FIELD_WIDTH && board[i-1][j+1] == BoardSymbols.BOMB) ctn += 1;
+                        if (j + 1 < BOARD_WIDTH && board[i-1][j+1] == BoardSymbols.BOMB) ctn += 1;
                     }
-                    if (i + 1 < FIELD_LENGTH) {
+                    if (i + 1 < BOARD_LENGTH) {
                         if (j - 1 >= 0 && board[i+1][j-1] == BoardSymbols.BOMB) ctn += 1;
                         if (board[i+1][j] == BoardSymbols.BOMB) ctn += 1;
-                        if (j + 1 < FIELD_WIDTH && board[i+1][j+1] == BoardSymbols.BOMB) ctn += 1;
+                        if (j + 1 < BOARD_WIDTH && board[i+1][j+1] == BoardSymbols.BOMB) ctn += 1;
                     }
                     if (j - 1 >= 0 && board[i][j-1] == BoardSymbols.BOMB) ctn += 1;
-                    if (j + 1 < FIELD_WIDTH && board[i][j+1] == BoardSymbols.BOMB) ctn += 1;
+                    if (j + 1 < BOARD_WIDTH && board[i][j+1] == BoardSymbols.BOMB) ctn += 1;
 
                     if (ctn == 0) board[i][j] = BoardSymbols.ZERO_BOMBS;
                     else if(ctn == 1)  board[i][j] = BoardSymbols.ONE_BOMBS;
@@ -106,8 +106,8 @@ class Board {
         /*
        Initialization ClosedBoard.
          */
-        for (int i = 0; i < FIELD_LENGTH; i++) {
-            for (int j = 0; j < FIELD_WIDTH; j++) {
+        for (int i = 0; i < BOARD_LENGTH; i++) {
+            for (int j = 0; j < BOARD_WIDTH; j++) {
                 board[i][j] = BoardSymbols.CLOSED_SQUARE;
             }
         }

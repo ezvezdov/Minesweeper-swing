@@ -2,7 +2,6 @@ package main.java.com.company;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 public class Logic {
@@ -51,14 +50,14 @@ public class Logic {
 
     private int flags_count;
 
-    private int FIELD_LENGTH;
-    private int FIELD_WIDTH;
+    private int BOARD_LENGTH;
+    private int BOARD_WIDTH;
 
     private View window;
 
-    Logic(Board board,View window,int FIELD_LENGTH, int FIELD_WIDTH, int SQUARE_PX){
-        this.FIELD_LENGTH = FIELD_LENGTH;
-        this.FIELD_WIDTH = FIELD_WIDTH;
+    Logic(Board board,View window,int BOARD_LENGTH, int BOARD_WIDTH, int SQUARE_PX){
+        this.BOARD_LENGTH = BOARD_LENGTH;
+        this.BOARD_WIDTH = BOARD_WIDTH;
         this.SQUARE_PX = SQUARE_PX;
         this.flags_count = board.BOMBS_COUNT;
 
@@ -68,8 +67,8 @@ public class Logic {
     }
 
     public void InitClosed_img_field(Board board,BufferedImage[][] closed_img_field) {
-        for (int i = 0; i < FIELD_LENGTH; i++) {
-            for (int j = 0; j < FIELD_WIDTH; j++) {
+        for (int i = 0; i < BOARD_LENGTH; i++) {
+            for (int j = 0; j < BOARD_WIDTH; j++) {
                 SetIcons(board,closed_img_field,i, j, false, false, true);
             }
         }
@@ -130,7 +129,7 @@ public class Logic {
     /*
     If you clicked at block, where 0 bomb around. It's fill algorithm.
      */
-        if (i == -1 || i == FIELD_LENGTH || j == -1 || j == FIELD_WIDTH || board.ClosedBoard_is_FLAG(i, j))
+        if (i == -1 || i == BOARD_LENGTH || j == -1 || j == BOARD_WIDTH || board.ClosedBoard_is_FLAG(i, j))
             return;
         if (!board.OpenedBoard_is_ZERO_BOMBS(i, j)) {
             SetIcons(board,closed_img_field,i, j, false, false, false);
@@ -158,8 +157,8 @@ public class Logic {
      */
         int flags_around = board.getOpenedBoardInformation(i, j);
 
-        int kmax = i + 1 < FIELD_LENGTH ? 2 : 1;
-        int lmax = j + 1 < FIELD_LENGTH ? 2 : 1;
+        int kmax = i + 1 < BOARD_LENGTH ? 2 : 1;
+        int lmax = j + 1 < BOARD_LENGTH ? 2 : 1;
 
         //kmax, lmax, k and l are calculated to prevent ArrayIndexOutOfBoundsException.
 
@@ -193,8 +192,8 @@ public class Logic {
     Open all blocks if you lose
      */
         Game_over = true;
-        for (int i = 0; i < FIELD_LENGTH; i++) {
-            for (int j = 0; j < FIELD_LENGTH; j++) {
+        for (int i = 0; i < BOARD_LENGTH; i++) {
+            for (int j = 0; j < BOARD_LENGTH; j++) {
                 if (board.OpenedBoard_is_ZERO_BOMBS(i, j)) {
                     SetIcons(board,closed_img_field,i, j, true, false, false);
                 } else SetIcons(board,closed_img_field,i, j, false, false, false);
@@ -204,8 +203,8 @@ public class Logic {
     }
     private void CheckWrongBombs(Board board) {
         window.StopTimer();
-        for (int i = 0; i < FIELD_LENGTH; i++) {
-            for (int j = 0; j < FIELD_LENGTH; j++) {
+        for (int i = 0; i < BOARD_LENGTH; i++) {
+            for (int j = 0; j < BOARD_LENGTH; j++) {
                 if (board.ClosedBoard_is_FLAG(i, j)) {
                     if (!board.OpenedBoard_is_BOMB(i, j)) {
                         board.OpenedBoard_set_WRONG_BOMB(i, j);
@@ -246,4 +245,6 @@ public class Logic {
             OpenBlocksAround(board,closed_img_field,i, j);
         }
     }
+
 }
+
