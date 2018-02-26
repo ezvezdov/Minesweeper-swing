@@ -215,11 +215,13 @@ public class Logic {
     }
 
     public void MouseButton(Board board,View window,BufferedImage[][] closed_img_field,int MouseButton,int i, int j){
-        if(MouseButton == 0){
-            LeftMouseButtonHandler(board,closed_img_field,i,j);
-        }
-        else  if(MouseButton == 1){
-            RightMouseButtonHandler(board,window,closed_img_field,i,j);
+        if(!Game_over){
+            if(MouseButton == 0){
+                LeftMouseButtonHandler(board,closed_img_field,i,j);
+            }
+            else  if(MouseButton == 1){
+                RightMouseButtonHandler(board,window,closed_img_field,i,j);
+            }
         }
     }
 
